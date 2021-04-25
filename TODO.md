@@ -1,0 +1,3 @@
+- fix lerna-changelog
+- index.html (path for the frontend is currently "frontend/build/index.js" and it's looking in the `node_modules` directory)
+- improve parcel setup so frontend can be build for both browser & nodejs (it will allow us to remove the ugly with the SSR)
