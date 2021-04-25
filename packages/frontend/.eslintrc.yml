@@ -1,0 +1,22 @@
+env:
+  browser: true
+  es2021: true
+extends:
+  - 'eslint:recommended'
+  - 'plugin:react/recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - 'prettier'
+  - 'plugin:prettier/recommended'
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaFeatures:
+    tsx: true
+  ecmaVersion: 2020
+  project: 'tsconfig.json'
+  sourceType: module
+plugins:
+  - react
+rules: {}
+settings:
+  react:
+    version: "detect"
