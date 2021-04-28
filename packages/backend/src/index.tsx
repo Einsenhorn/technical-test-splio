@@ -1,44 +1,43 @@
-import path from "path";
-import fs from "fs";
-
-import React from "react";
-
 import express from "express";
-import ReactDOMServer from "react-dom/server";
-import bootstrap from "./bootstrap";
 
-import { Counter } from "frontend";
+import Gbfs from "./gbfs";
+import bootstrap from "./bootstrap";
+import ssrRoutes from "./routes/ssr-routes";
+import routes from "./routes/systems-routes";
+
+import NABSASystemsCSVRow from "./types/NABSASystemsCSVRow";
 
 const app = express();
 const port = 3000;
 
-bootstrap();
-
-app.use(express.static("node_modules"));
-
-app.get("/", (req, res) => {
-    const app = ReactDOMServer.renderToString(
-        (
-            <div>
-                <h1>counter at: 0</h1>
-                <button>button</button>
-            </div>
-        )
-    );
-
-    const indexFile = path.resolve("./index.html");
-    fs.readFile(indexFile, "utf8", (err, data) => {
+bootstrap(
+    (row) => row["Country Code"] === "FR" && row.Location === "Paris, FR",
+    async (err, systems) => {
         if (err) {
-            console.error("Something went wrong:", err);
-            return res.status(500).send("Oops, better luck next time!");
+            return console.error(err);
         }
 
-        return res.send(
-            data.replace('<div id="root"></div>', `<div id="root">${app}</div>`)
-        );
-    });
-});
+        const gbfs = new Gbfs(systems as NABSASystemsCSVRow[]);
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});
+        try {
+            await gbfs.ensureSystemsExists();
+            await gbfs.warmUpCache();
+            // console.log(await gbfs.getStationsStatus("Lime Paris"));
+        } catch (error) {
+            console.error(error);
+            process.exit(1);
+        }
+
+        app.set("gbfs", gbfs);
+
+        // This is a ugly hack.
+        app.use(express.static("node_modules"));
+
+        app.use(ssrRoutes);
+        app.use(routes);
+
+        app.listen(port, () =>
+            console.log(`Example app listening at http://localhost:${port}`)
+        );
+    }
+);
