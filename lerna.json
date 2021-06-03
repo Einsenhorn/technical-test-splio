@@ -1,0 +1,31 @@
+{
+  "changelog": {
+    "repo": "Einsenhorn/technical-test-splio",
+    "labels": {
+      "breaking": ":boom: Breaking Change",
+      "enhancement": ":rocket: (Enhancement)",
+      "bug": ":bug: (Bug Fix)",
+      "documentation": ":books: (Refine Doc)"
+    }
+  },
+  "command": {
+    "publish": {
+      "ignoreChanges": [
+        "ignored-file",
+        "*.md"
+      ],
+      "message": "chore(release): publish",
+      "registry": "https://npm.pkg.github.com"
+    },
+    "bootstrap": {
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
+    }
+  },
+  "npmClient": "npm",
+  "packages": [
+    "packages/*"
+  ],
+  "version": "0.0.1"
+}

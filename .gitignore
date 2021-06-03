@@ -1,0 +1,11 @@
+# Logs
+npm-debug.log*
+
+# Build directories
+build/
+
+# Dependency directories
+node_modules/
+
+# Parcel cache directory
+.parcel-cache
